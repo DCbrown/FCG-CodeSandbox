@@ -1,13 +1,14 @@
 import React from "react";
 
-class List extends React.Component {
-  state = {
-    client: []
-  };
-
-  render() {
-    return <h1>List</h1>;
-  }
-}
+const List = props => {
+  return (
+    <div>
+      <h1>List</h1>
+      <ul>
+        <li />
+      </ul>
+    </div>
+  );
+};
 
 export default List;

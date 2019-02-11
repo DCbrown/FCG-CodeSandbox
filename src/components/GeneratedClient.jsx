@@ -1,13 +1,13 @@
 import React from "react";
 
-class GeneratedClient extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Generated Client</h1>
-      </div>
-    );
-  }
-}
+const GeneratedClient = props => {
+  return (
+    <div>
+      <p>
+        {props.generateFirstName} {props.generateLastName}
+      </p>
+    </div>
+  );
+};
 
 export default GeneratedClient;
