@@ -2,11 +2,15 @@ import React from "react";
 import List from "./List";
 import GeneratedClient from "./GeneratedClient";
 
+// USE LOCAL STORAGE!!!
+// TRY LOCAL ENV + CHECK CONSOLE.LOGS OBJECTS SEE IF THEY MATCH
+
 class Generate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       clientIsPresented: false,
+      generateId: null,
       generateFirstName: "",
       generateLastName: "",
       generateRequest: "",
@@ -62,24 +66,29 @@ class Generate extends React.Component {
     });
   };
 
-  handleClick = () => {
+  handleClick = e => {
+    e.preventDefault();
     const { clients } = this.state;
     const gen = Math.floor(Math.random() * clients.length);
+    const genId = clients[gen].id;
     const genFirstName = clients[gen].firstName;
     const genLastName = clients[gen].lastName;
     const genRequest = clients[gen].request;
     console.log(genFirstName);
     this.setState({
+      generateId: genId,
       generateFirstName: genFirstName,
       generateLastName: genLastName,
       generateRequest: genRequest,
       clientIsPresented: true
     });
     console.log(this.state.generateFirstName);
+    console.log("HEY!" + this.state.acceptedClients.firstName);
   };
 
-  handleDecline = () => {
+  handleDecline = e => {
     this.setState({
+      generateId: "",
       generateFirstName: "",
       generateLastName: "",
       generateRequest: "",
@@ -87,27 +96,20 @@ class Generate extends React.Component {
     });
   };
 
-  handleAccept = () => {
+  handleAccept = e => {
+    e.preventDefault();
     this.handleDecline();
-    let joinedFirstName = this.state.acceptedClients.concat(
-      this.state.generateFirstName
-    );
-    let joinedLastName = this.state.acceptedClients.concat(
-      this.state.generateLastName
-    );
-    let joinedRequest = this.state.acceptedClients.concat(
-      this.state.generateRequest
-    );
-    this.setState({
-      acceptedClients: [
-        {
-          firstName: joinedFirstName,
-          lastName: joinedLastName,
-          request: joinedRequest
-        }
-      ]
-    });
-    console.log(this.state.acceptedClients);
+
+    const obj = {
+      id: this.state.generateId,
+      firstName: this.state.generateFirstName,
+      lastName: this.state.generateLastName,
+      request: this.state.generateRequest
+    };
+    this.state.acceptedClients.push(obj);
+
+    console.log("object " + obj.firstName);
+    console.log("accpted " + this.state.acceptedClients.firstName);
   };
 
   render() {
@@ -131,13 +133,9 @@ class Generate extends React.Component {
           generateFirstName={this.state.generateFirstName}
           generateLastName={this.state.generateLastName}
         />
+        <List acceptedClients={this.state.acceptedClients} />
         {acceptButton}
         {declineButton}
-        <List
-          generatefirstName={this.state.generateFirstName}
-          generatelastName={this.state.generateLastName}
-          generateRequest={this.state.generateRequest}
-        />
       </div>
     );
   }

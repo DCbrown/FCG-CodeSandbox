@@ -5,7 +5,11 @@ const List = props => {
     <div>
       <h1>List</h1>
       <ul>
-        <li />
+        {props.acceptedClients.map((item, key) => (
+          <li key={item.id}>
+            {item.id} {item.firstName}
+          </li>
+        ))}
       </ul>
     </div>
   );
