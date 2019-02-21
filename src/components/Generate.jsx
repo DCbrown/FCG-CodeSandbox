@@ -1,7 +1,4 @@
 import React from "react";
-import List from "./List";
-import GeneratedClient from "./GeneratedClient";
-
 // USE LOCAL STORAGE!!!
 // TRY LOCAL ENV + CHECK CONSOLE.LOGS OBJECTS SEE IF THEY MATCH
 
@@ -22,6 +19,8 @@ class Generate extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleDecline = this.handleDecline.bind(this);
     this.handleAccept = this.handleAccept.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentDidMount() {
@@ -112,6 +111,17 @@ class Generate extends React.Component {
     console.log("accpted " + this.state.acceptedClients.firstName);
   };
 
+  handleDelete = e => {
+    const array = this.state.acceptedClients;
+    const index = array.indexOf(e.target.value);
+    array.splice(index, 1);
+    this.setState({ acceptedClients: array });
+  };
+
+  handleEdit = () => {
+    console.log("edit");
+  };
+
   render() {
     /*
     const { clients } = this.state;
@@ -120,6 +130,7 @@ class Generate extends React.Component {
     */
     let acceptButton;
     let declineButton;
+
     if (this.state.clientIsPresented) {
       acceptButton = <button onClick={this.handleAccept}>Accept</button>;
       declineButton = <button onClick={this.handleDecline}>Decline</button>;
@@ -129,11 +140,19 @@ class Generate extends React.Component {
       <div>
         <h1>Generate</h1>
         <button onClick={this.handleClick}>Generate Client</button>
-        <GeneratedClient
-          generateFirstName={this.state.generateFirstName}
-          generateLastName={this.state.generateLastName}
-        />
-        <List acceptedClients={this.state.acceptedClients} />
+        <p>
+          {this.state.generateFirstName} {this.state.generateLastName}
+        </p>
+        <h1>List</h1>
+        <ul>
+          {this.state.acceptedClients.map((item, key) => (
+            <li key={item.id}>
+              {item.id} {item.firstName}
+              <button onClick={this.handleEdit}>Edit</button>
+              <button onClick={this.handleDelete}>Delete</button>
+            </li>
+          ))}
+        </ul>
         {acceptButton}
         {declineButton}
       </div>

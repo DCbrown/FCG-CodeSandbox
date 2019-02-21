@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Generate from "./Generate";
-import List from "./List";
 
 class App extends React.Component {
   state = {
