@@ -111,11 +111,29 @@ class Generate extends React.Component {
     console.log("accpted " + this.state.acceptedClients.firstName);
   };
 
-  handleDelete = e => {
+  /*
+  handleDelete = (e) => {
     const array = this.state.acceptedClients;
     const index = array.indexOf(e.target.value);
     array.splice(index, 1);
     this.setState({ acceptedClients: array });
+  };
+  */
+
+  /*
+  handleDelete (e) {
+    if(window.confirm("Are you sure?")) {
+      const clients = this.state.setState.filter(cli => cli.id !==e)
+      this.setState({acceptedClients})
+    }
+  };
+  */
+
+  handleDelete = key => {
+    console.log(key);
+    const clients = [...this.state.acceptedClients];
+    clients.splice(key, 1);
+    this.setState({ acceptedClients: clients });
   };
 
   handleEdit = () => {
@@ -138,7 +156,14 @@ class Generate extends React.Component {
 
     return (
       <div>
-        <h1>Generate</h1>
+        <section className="hero is-light is-medium">
+          <div className="hero-body">
+            <div className="container">
+              <h1 className="title">Generate</h1>
+            </div>
+          </div>
+        </section>
+
         <button onClick={this.handleClick}>Generate Client</button>
         <p>
           {this.state.generateFirstName} {this.state.generateLastName}
@@ -149,7 +174,9 @@ class Generate extends React.Component {
             <li key={item.id}>
               {item.id} {item.firstName}
               <button onClick={this.handleEdit}>Edit</button>
-              <button onClick={this.handleDelete}>Delete</button>
+              <button onClick={this.handleDelete.bind(this, key)}>
+                Delete
+              </button>
             </li>
           ))}
         </ul>
