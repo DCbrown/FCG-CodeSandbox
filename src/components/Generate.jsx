@@ -73,7 +73,7 @@ class Generate extends React.Component {
     const genFirstName = clients[gen].firstName;
     const genLastName = clients[gen].lastName;
     const genRequest = clients[gen].request;
-    console.log(genFirstName);
+    console.log(genRequest);
     this.setState({
       generateId: genId,
       generateFirstName: genFirstName,
@@ -81,8 +81,8 @@ class Generate extends React.Component {
       generateRequest: genRequest,
       clientIsPresented: true
     });
-    console.log(this.state.generateFirstName);
-    console.log("HEY!" + this.state.acceptedClients.firstName);
+    console.log(this.state.generateRequest);
+    console.log("HEY!" + this.state.acceptedClients.generateRequest);
   };
 
   handleDecline = e => {
@@ -108,26 +108,10 @@ class Generate extends React.Component {
     this.state.acceptedClients.push(obj);
 
     console.log("object " + obj.firstName);
-    console.log("accpted " + this.state.acceptedClients.firstName);
+    console.log("oject " + obj.lastName);
+    console.log("object " + obj.request);
+    console.log(this.state.acceptedClients);
   };
-
-  /*
-  handleDelete = (e) => {
-    const array = this.state.acceptedClients;
-    const index = array.indexOf(e.target.value);
-    array.splice(index, 1);
-    this.setState({ acceptedClients: array });
-  };
-  */
-
-  /*
-  handleDelete (e) {
-    if(window.confirm("Are you sure?")) {
-      const clients = this.state.setState.filter(cli => cli.id !==e)
-      this.setState({acceptedClients})
-    }
-  };
-  */
 
   handleDelete = key => {
     console.log(key);
@@ -141,47 +125,92 @@ class Generate extends React.Component {
   };
 
   render() {
-    /*
-    const { clients } = this.state;
-    console.log(clients);
-    console.log('clients length: ' + clients.length);
-    */
-    let acceptButton;
-    let declineButton;
+    let showClient;
 
     if (this.state.clientIsPresented) {
-      acceptButton = <button onClick={this.handleAccept}>Accept</button>;
-      declineButton = <button onClick={this.handleDecline}>Decline</button>;
+      showClient = (
+        <div className="card text-center">
+          <h5 className="card-header">Client Request</h5>
+          <div className="card-body">
+            <h5 className="card-title">
+              {this.state.generateFirstName} {this.state.generateLastName}
+            </h5>
+            <p className="card-text">
+              With supporting text below as a natural lead-in to additional
+              content.
+            </p>
+            <p className="card-text">{this.state.generateRequest}</p>
+            <button className="btn btn-success" onClick={this.handleAccept}>
+              Accept
+            </button>
+            <button className="btn btn-danger" onClick={this.handleDecline}>
+              Decline
+            </button>
+            <br />
+            <time datetime="2016-1-1">11:09 PM - 1 Jan 2019</time>
+          </div>
+        </div>
+      );
     }
 
     return (
       <div>
-        <section className="hero is-light is-medium">
-          <div className="hero-body">
-            <div className="container">
-              <h1 className="title">Generate</h1>
-            </div>
+        <div className="jumbotron jumbotron-fluid text-center">
+          <div className="container">
+            <h1 className="display-4">Fluid jumbotron</h1>
+            <button
+              type="button"
+              className="btn btn-info"
+              onClick={this.handleClick}
+            >
+              Generate A Client <i class="fa fa-users" aria-hidden="true" />
+            </button>
+            <p className="lead">
+              This is a modified jumbotron that occupies the entire horizontal
+              space of its parent.
+            </p>
           </div>
-        </section>
-
-        <button onClick={this.handleClick}>Generate Client</button>
-        <p>
-          {this.state.generateFirstName} {this.state.generateLastName}
-        </p>
-        <h1>List</h1>
-        <ul>
-          {this.state.acceptedClients.map((item, key) => (
-            <li key={item.id}>
-              {item.id} {item.firstName}
-              <button onClick={this.handleEdit}>Edit</button>
-              <button onClick={this.handleDelete.bind(this, key)}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-        {acceptButton}
-        {declineButton}
+        </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6 offset-md-3">{showClient}</div>
+          </div>
+        </div>
+        <div className="column is-full">
+          <h1 className="has-text-centered">List</h1>
+          <div className="has-text-centered">
+            <span className="button is-success">Accepted</span>
+            <span className="button is-info">In Progress</span>
+            <span className="button is-danger">Finished</span>
+          </div>
+          <div className="col-8 offset-md-2">
+            <ul className="list-group">
+              {this.state.acceptedClients.map((item, key) => (
+                <li
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                  key={item.id}
+                >
+                  {item.firstName} {item.lastName} | {item.request} | Progress:
+                  0%
+                  <span>
+                    <button
+                      className="btn btn-outline-info"
+                      onClick={this.handleEdit}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-outline-danger"
+                      onClick={this.handleDelete.bind(this, key)}
+                    >
+                      Delete
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     );
   }
