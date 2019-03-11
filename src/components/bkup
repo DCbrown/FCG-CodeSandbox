@@ -7,9 +7,9 @@ class Generate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      clinetIsEdit: false,
       clientIsPresented: false,
-      generateId: 0,
-      generateClientIndex: 0,
+      generateId: null,
       generateFirstName: "",
       generateLastName: "",
       generateRequest: "",
@@ -24,6 +24,8 @@ class Generate extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleDecline = this.handleDecline.bind(this);
     this.handleAccept = this.handleAccept.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleEditClosed = this.handleEditClosed.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
 
@@ -80,6 +82,7 @@ class Generate extends React.Component {
     const genParagraphOne = clients[gen].paragraphOne;
     const genParagraphTwo = clients[gen].paragraphTwo;
     const genParagraphThree = clients[gen].paragraphThree;
+    console.log(genRequest);
     this.setState({
       generateId: genId,
       generateFirstName: genFirstName,
@@ -90,15 +93,18 @@ class Generate extends React.Component {
       generateParagraphThree: genParagraphThree,
       clientIsPresented: true
     });
+    console.log(this.state.generateRequest);
+    console.log("HEY!" + this.state.acceptedClients.generateRequest);
   };
 
   handleDecline = e => {
     this.setState({
+      generateId: "",
       generateFirstName: "",
       generateLastName: "",
       generateRequest: "",
       genParagraphOne: "",
-      genParagraphTwo: "",
+      genParagraphThree: '',
       genParagraphThree: "",
       clientIsPresented: false
     });
@@ -115,12 +121,21 @@ class Generate extends React.Component {
       request: this.state.generateRequest,
       paragraphOne: this.state.generateParagraphOne,
       paragraphTwo: this.state.generateParagraphTwo,
-      paragraphThree: this.state.generateParagraphThree
+      paragraphThree: this.state.generateParagraphThree,
     };
     this.state.acceptedClients.push(obj);
 
-    console.log("object " + obj.id);
-    console.log("id is " + this.state.acceptedClients.firstName);
+    console.log("object " + obj.firstName);
+    console.log("oject " + obj.lastName);
+    console.log("object " + obj.request);
+    console.log(this.state.acceptedClients);
+  };
+
+  handleDelete = key => {
+    console.log(key);
+    const clients = [...this.state.acceptedClients];
+    clients.splice(key, 1);
+    this.setState({ acceptedClients: clients });
   };
 
   handleDelete = key => {
@@ -129,14 +144,28 @@ class Generate extends React.Component {
       console.log(key);
       const clients = [...this.state.acceptedClients];
       clients.splice(key, 1);
-      clients.clientIndex = -1;
       this.setState({ acceptedClients: clients });
     } else {
     }
   };
 
+  handleEdit = e => {
+    e.preventDefault();
+    this.setState({
+      clinetIsEdit: true
+    });
+  };
+
+  handleEditClosed = e => {
+    e.preventDefault();
+    this.setState({
+      clinetIsEdit: false
+    });
+  };
+
   render() {
     let showClient;
+    let showClientEdit;
 
     if (this.state.clientIsPresented) {
       showClient = (
@@ -144,8 +173,7 @@ class Generate extends React.Component {
           <h5 className="card-header">Client Request</h5>
           <div className="card-body">
             <h5 className="card-title">
-              {this.state.generateId} {this.state.generateFirstName}{" "}
-              {this.state.generateLastName}
+              {this.state.generateFirstName} {this.state.generateLastName}
             </h5>
             <p className="card-text">
               With supporting text below as a natural lead-in to additional
@@ -159,8 +187,51 @@ class Generate extends React.Component {
               Decline
             </button>
             <br />
+            <time datetime="2016-1-1">11:09 PM - 1 Jan 2019</time>
           </div>
         </div>
+      );
+    }
+
+    if (this.state.clinetIsEdit) {
+      showClientEdit = (
+        <form>
+          <div className="form-group">
+            <label for="exampleFormControlSelect1">Percentage complete</label>
+            <select classNAme="form-control" id="exampleFormControlSelect1">
+              <option>0 %</option>
+              <option>10 %</option>
+              <option>20 %</option>
+              <option>30 %</option>
+              <option>40 %</option>
+              <option>50 %</option>
+              <option>60 %</option>
+              <option>70 %</option>
+              <option>80 %</option>
+              <option>90 %</option>
+              <option>Complete</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label for="exampleFormControlTextarea1">Notes</label>
+            <textarea
+              class="form-control"
+              id="exampleFormControlTextarea1"
+              rows="3"
+              placeholder="Created layout, add images, develop JvavScript file, etc"
+            />
+          </div>
+          <button type="submit" className="btn btn-success">
+            Save <i class="far fa-save" />
+          </button>
+          <button
+            type="submit"
+            onClick={this.handleEditClosed.bind(this)}
+            className="btn btn-danger"
+          >
+            Close <i className="fas fa-times" />
+          </button>
+        </form>
       );
     }
 
@@ -203,26 +274,14 @@ class Generate extends React.Component {
                 >
                   <div id="accordion">
                     <div class="card">
-                      <div class="card-header" id={"heading" + item.id}>
+                      <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
-                          <button
-                            class="btn btn-link"
-                            data-toggle="collapse"
-                            data-target={"#collapse" + item.id}
-                            aria-expanded="false"
-                            aria-controls={"collapse" + item.id}
-                          >
-                            {item.id} {item.firstName} {item.lastName} |{" "}
-                            {item.request} | Progress: 0%
+                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            {item.paragraphOne} {item.firstName} {item.lastName} | {item.request} | Progress: 0%
                           </button>
                         </h5>
                       </div>
-                      <div
-                        id={"collapse" + item.id}
-                        class="collapse"
-                        aria-labelledby={"heading" + item.id}
-                        data-parent="#accordion"
-                      >
+                      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
                           <p>{item.paragraphOne}</p>
                           <p>{item.paragraphTwo}</p>
@@ -232,7 +291,7 @@ class Generate extends React.Component {
                             onClick={this.handleDelete.bind(this, key)}
                           >
                             Delete
-                          </button>
+                      </button>
                         </div>
                       </div>
                     </div>
@@ -240,6 +299,7 @@ class Generate extends React.Component {
                 </li>
               ))}
             </ul>
+            {showClientEdit}
           </div>
         </div>
       </div>
