@@ -21,12 +21,15 @@ class Generate extends React.Component {
       clients: [],
       acceptedClients: [],
       inProgressClients: [],
-      completedClients: []
+      completedClients: [],
+      notesValue: ""
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleDecline = this.handleDecline.bind(this);
     this.handleAccept = this.handleAccept.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleDeleteAccepted = this.handleDeleteAccepted.bind(this);
+    this.handleDeleteInProgress = this.handleDeleteInProgress.bind(this);
+    this.handleNotesInput = this.handleNotesInput.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +88,7 @@ class Generate extends React.Component {
     const genParagraphOne = clients[gen].paragraphOne;
     const genParagraphTwo = clients[gen].paragraphTwo;
     const genParagraphThree = clients[gen].paragraphThree;
+    const genNotes = clients[gen].notes
     this.setState({
       generateId: genId,
       generateFirstName: genFirstName,
@@ -92,7 +96,8 @@ class Generate extends React.Component {
       generateRequest: genRequest,
       generateParagraphOne: genParagraphOne,
       generateParagraphTwo: genParagraphTwo,
-      generateParagraphThree: genParagraphThree,      
+      generateParagraphThree: genParagraphThree,
+      generateNotes: genNotes,      
       clientIsPresented: true
     });
   };
@@ -121,6 +126,7 @@ class Generate extends React.Component {
       paragraphOne: this.state.generateParagraphOne,
       paragraphTwo: this.state.generateParagraphTwo,
       paragraphThree: this.state.generateParagraphThree,
+      notes: "",
       status: "accpeted"
     };
     this.state.acceptedClients.push(obj);
@@ -128,10 +134,9 @@ class Generate extends React.Component {
 
     //console.log("object " + obj.id);
     //console.log("id is " + this.state.acceptedClients.firstName);
-    
   };
 
-  handleDelete = key => {
+  handleDeleteAccepted = key => {
     let r = window.confirm("Are you sure you want to delete this user");
     if (r === true) {
       console.log(key);
@@ -139,6 +144,18 @@ class Generate extends React.Component {
       clients.splice(key, 1);
       clients.clientIndex = -1;
       this.setState({ acceptedClients: clients });
+    } else {
+    }
+  };
+
+  handleDeleteInProgress = key => {
+    let r = window.confirm("Are you sure you want to delete this user");
+    if (r === true) {
+      console.log(key);
+      const clients = [...this.state.inProgressClients];
+      clients.splice(key, 1);
+      clients.clientIndex = -1;
+      this.setState({ inProgressClients: clients });
     } else {
     }
   };
@@ -171,6 +188,8 @@ class Generate extends React.Component {
           clients.splice(key, 1);
           clients.clientIndex = -1;
           this.setState({ acceptedClients: clients })
+          console.log('in prog')
+          console.log(this.state.inProgressClients);
         } else {
           console.log('no logs');
         }
@@ -206,7 +225,25 @@ class Generate extends React.Component {
     } else {
     }
   };
+
+  handleNotesInput(key, e) {
+    //e.preventDefault();
   
+    const clients = [...this.state.inProgressClients];
+    clients[key].notes = e.target.value;  
+    
+
+    console.log(this.state.notesValue);
+
+ 
+    //clients[key].notes = this.state.notesValue;
+    this.setState({inProgressClients: clients})
+    console.log(clients);
+   
+    
+    // console.log(this.state[key].acceptedClients.notes);
+  }
+
   render() {
     let showClient;
 
@@ -272,9 +309,11 @@ class Generate extends React.Component {
           </ul>
           <div className="tab-content" id="myTabContent">
             <div className="tab-pane fade show active" id="accepted" role="tabpanel" aria-labelledby="accepted-tab">
-              <div className="col-12">
+              
+              <div className="offset-md-3 mt-3 col-md-6">
+              
+                <ul className="list-group">
                 
-                <ul className="list-group col-12">
                   {this.state.acceptedClients.map((item, key) => (
                     <li
                       className="list-group-item d-flex justify-content-between align-items-center col-12"
@@ -285,7 +324,7 @@ class Generate extends React.Component {
                           <div className="card-header text-center" id={'heading' + item.id}>
                             <h5 className="mb-0">
                               <button className="btn btn-link" data-toggle="collapse" data-target={'#collapse' + item.id} aria-expanded="false" aria-controls={'collapse' + item.id}>
-                              {item.firstName} {item.lastName} {item.request} 
+                              {item.firstName} {item.lastName}  {item.request} 
                               </button>
                             </h5>
                           </div>
@@ -296,7 +335,7 @@ class Generate extends React.Component {
                             <p>{item.paragraphThree}</p>
                           <button
                           className="btn btn-outline-danger"
-                          onClick={this.handleDelete.bind(this, key)}
+                          onClick={this.handleDeleteAccepted.bind(this, key)}
                           >
                           Delete
                           </button>
@@ -315,7 +354,55 @@ class Generate extends React.Component {
                 </ul>
               </div>
             </div>
-            <div className="tab-pane fade" id="inProgress" role="tabpanel" aria-labelledby="inProgress-tab">In Progress</div>
+            <div className="tab-pane fade" id="inProgress" role="tabpanel" aria-labelledby="inProgress-tab">
+            <div className="col-12">
+                <ul className="list-group col-12">
+                  {this.state.inProgressClients.map((item, key) => (
+                    <li
+                      className="list-group-item d-flex justify-content-between align-items-center col-12"
+                      key={item.id}
+                    >
+                      <div id="accordion" className="col-12">
+                        <div className="card">
+                          <div className="card-header text-center" id={'heading' + item.id}>
+                            <h5 className="mb-0">
+                              <button className="btn btn-link" data-toggle="collapse" data-target={'#collapse' + item.id} aria-expanded="false" aria-controls={'collapse' + item.id}>
+                              {item.firstName} {item.lastName} {item.request} 
+                              </button>
+                            </h5>
+                          </div>
+                          <div id={'collapse' + item.id} className="collapse" aria-labelledby={"heading" + item.id} data-parent="#accordion">
+                            <div className="card-body">
+                            <p>{item.paragraphOne}</p>
+                            <p>{item.paragraphTwo}</p>
+                            <p>{item.paragraphThree}</p>
+                          <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Notes</label>
+                            <textarea class="form-control" name="note" onKeyUp={this.handleNotesInput.bind(this, key)} id="exampleFormControlTextarea1" rows="5" placeholder="Add layout, add styles, add functionality, etc..."></textarea>
+                          </div>  
+                          <hr/>
+                          <button
+                          className="btn btn-outline-danger"
+                          onClick={this.handleDeleteInProgress.bind(this, key)}
+                          >
+                          Delete
+                          </button>
+                          <button
+                          className="btn btn-outline-info"
+                          onClick={this.handleDeleteInProgress.bind(this, key)}
+                          >
+                          Move to Finished 
+                          </button>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>  
+                    </li>
+                  ))}
+                </ul>
+              </div>     
+            </div>
             <div className="tab-pane fade" id="finished" role="tabpanel" aria-labelledby="finished-tab">Finished</div>
           </div>          
         </div>
